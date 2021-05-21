@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -20,6 +21,7 @@ public class WeaponSpawner : MonoBehaviour
     [SerializeField] private GameObject launcherPrefab;
     [SerializeField] private GameObject dogPrefab;
     [SerializeField] private GameObject grenadePrefab;
+    private                  int        ammo;
     
     private                  GameObject objectToSpawn;
 
@@ -64,12 +66,13 @@ public class WeaponSpawner : MonoBehaviour
             StartCoroutine( SpawnOverTime( ) );
         }
     }
-
+    
     private IEnumerator SpawnOverTime() {
         isSpawning = true;
         yield return new WaitForSeconds( spawnTimer );
         GameObject g = Instantiate( objectToSpawn , transform.position , Quaternion.identity );
         NetworkServer.Spawn( g );
+        g.transform.parent = gameObject.transform;
         isSpawning = false;
     }
 }
