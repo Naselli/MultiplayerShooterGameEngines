@@ -40,7 +40,7 @@ public class Player_Movement : NetworkBehaviour {
         if ( Input.GetKey ( KeyCode.D ) ) moveInput += cam.transform.right ;
 
         transform.Rotate ( 0 , Input.GetAxis ( "Mouse X" ) , 0 ) ;
-        cam.transform.Rotate ( Mathf.Clamp(Input.GetAxis ( "Mouse Y" ), -20, 20) , 0 , 0 ) ;
+        cam.transform.Rotate ( Mathf.Clamp(-Input.GetAxis ( "Mouse Y" ), -20, 20) , 0 , 0 ) ;
         #endregion
 
         #region CheckWeapon
@@ -57,28 +57,35 @@ public class Player_Movement : NetworkBehaviour {
         GameObject p = GameObject.Instantiate ( projectile , transform.position + new Vector3 ( 0 , 1 , 1.5f ) , Quaternion.identity ) ;
         NetworkServer.Spawn ( p ) ;
     }
-
-    [ ServerCallback ] private void OnTriggerEnter ( Collider other ) {
-        if ( gameObject.transform.childCount == 0 ) {
-            switch ( other.gameObject.tag ) {
-                case "Gun" :
-                    weaponHolding = WeaponSpawner.WeaponTypes.NormalGun ;
-                    ammo = 30 ;
-                    break ;
-                case "Dog" :
-                    weaponHolding = WeaponSpawner.WeaponTypes.Walkingdog ;
-                    ammo = 1 ;
-                    break ;
-                case "Grenade" :
-                    weaponHolding = WeaponSpawner.WeaponTypes.Grenade ;
-                    ammo = 2 ;
-                    break ;
-                case "Launcher" :
-                    weaponHolding = WeaponSpawner.WeaponTypes.Launcher ;
-                    ammo = 2 ;
-                    break ;
+    
+private void OnTriggerEnter ( Collider other ) {
+        if ( isLocalPlayer ) {
+            if ( gameObject.transform.childCount == 0 ) {
+                switch ( other.gameObject.tag ) {
+                    case "Gun" :
+                        Debug.Log("PickedUpGun");
+                        weaponHolding = WeaponSpawner.WeaponTypes.NormalGun ;
+                        ammo = 30 ;
+                        break ;
+                    case "Dog" :
+                        Debug.Log("PickedUpDog");
+                        weaponHolding = WeaponSpawner.WeaponTypes.Walkingdog ;
+                        ammo = 1 ;
+                        break ;
+                    case "Grenade" :
+                        Debug.Log("PickedUpGrenade");
+                        weaponHolding = WeaponSpawner.WeaponTypes.Grenade ;
+                        ammo = 2 ;
+                        break ;
+                    case "Launcher" :
+                        Debug.Log("PickedUpLauncher");
+                        weaponHolding = WeaponSpawner.WeaponTypes.Launcher ;
+                        ammo = 2 ;
+                        break ;
+                }
             }
         }
+        
     }
 
     public void TakeDamage ( )                                                  => health -= 20 ;
